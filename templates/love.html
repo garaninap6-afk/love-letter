@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>❤️ Привет!</title>
+    <style>
+        /* Сбрасываем отступы */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Фиолетовый фон */
+        body {
+            background: #2b1b4a;
+            min-height: 100vh;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            position: relative;
+        }
+
+        /* Контейнер для плавающих надписей */
+        .floating-text-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Чтобы текст не мешал нажимать на котика */
+            z-index: 1;
+        }
+
+        /* Каждая плавающая надпись */
+        .floating-text {
+            position: absolute;
+            color: #ff6b8a;
+            font-size: 28px;
+            font-weight: bold;
+            text-shadow: 0 0 20px rgba(255, 107, 138, 0.5);
+            white-space: nowrap;
+            animation: floatAround 8s infinite alternate ease-in-out;
+            pointer-events: none;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+        }
+
+        /* Анимация плавания по экрану */
+        @keyframes floatAround {
+            0% {
+                transform: translate(0, 0) rotate(-5deg) scale(1);
+            }
+            25% {
+                transform: translate(80px, -50px) rotate(3deg) scale(1.05);
+            }
+            50% {
+                transform: translate(-30px, 80px) rotate(-8deg) scale(0.95);
+            }
+            75% {
+                transform: translate(60px, -30px) rotate(5deg) scale(1.02);
+            }
+            100% {
+                transform: translate(-50px, 60px) rotate(-3deg) scale(1);
+            }
+        }
+
+        /* Центральный контейнер с котиком */
+        .cat-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        /* Котик */
+        .cat {
+            font-size: 150px;
+            transition: transform 0.3s ease;
+            user-select: none;
+            line-height: 1;
+            filter: drop-shadow(0 0 30px rgba(255, 107, 138, 0.3));
+        }
+
+        .cat:hover {
+            transform: scale(1.05);
+        }
+
+        /* Подпись под котиком */
+        .cat-hint {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 16px;
+            margin-top: 15px;
+            letter-spacing: 2px;
+            animation: pulseHint 2s infinite;
+        }
+
+        @keyframes pulseHint {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Всплывающее уведомление */
+        .notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: rgba(43, 27, 74, 0.95);
+            border: 3px solid #ff6b8a;
+            border-radius: 30px;
+            padding: 50px 60px;
+            z-index: 1000;
+            text-align: center;
+            box-shadow: 0 0 60px rgba(255, 107, 138, 0.3);
+            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            backdrop-filter: blur(10px);
+            pointer-events: none;
+        }
+
+        .notification.show {
+            transform: translate(-50%, -50%) scale(1);
+            pointer-events: auto;
+        }
+
+        .notification .icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        .notification .text {
+            color: #ff6b8a;
+            font-size: 36px;
+            font-weight: bold;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            text-shadow: 0 0 20px rgba(255, 107, 138, 0.3);
+        }
+
+        .notification .sub-text {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 18px;
+            margin-top: 10px;
+        }
+
+        .notification .close-btn {
+            margin-top: 25px;
+            background: #ff6b8a;
+            border: none;
+            color: #2b1b4a;
+            font-size: 18px;
+            padding: 12px 40px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+            pointer-events: auto;
+        }
+
+        .notification .close-btn:hover {
+            background: #ff8aa5;
+        }
+
+        /* Затемнение фона */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s;
+        }
+
+        .overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Взрывающиеся сердечки при нажатии */
+        .sparkle {
+            position: fixed;
+            font-size: 30px;
+            pointer-events: none;
+            z-index: 100;
+            animation: sparkleFloat 1.5s ease-out forwards;
+        }
+
+        @keyframes sparkleFloat {
+            0% {
+                opacity: 1;
+                transform: translateY(0) rotate(0deg) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-250px) rotate(720deg) scale(0);
+            }
+        }
+
+        /* Для мобильных устройств */
+        @media (max-width: 600px) {
+            .cat {
+                font-size: 100px;
+            }
+            .floating-text {
+                font-size: 18px;
+            }
+            .notification .text {
+                font-size: 24px;
+            }
+            .notification {
+                padding: 30px 25px;
+                margin: 20px;
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Плавающие надписи "Я тебя люблю" -->
+    <div class="floating-text-container" id="floatingContainer"></div>
+
+    <!-- Котик -->
+    <div class="cat-container" id="catContainer">
+        <div class="cat" id="cat">🐱</div>
+        <div class="cat-hint">👆 Нажми на меня 👆</div>
+    </div>
+
+    <!-- Затемнение -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Уведомление -->
+    <div class="notification" id="notification">
+        <div class="icon">🥺</div>
+        <div class="text">Я очень скучаю 💔</div>
+        <div class="sub-text">Ты в моих мыслях каждую минуту</div>
+        <button class="close-btn" id="closeBtn">❤️ Закрыть ❤️</button>
+    </div>
+
+    <script>
+        // === 1. СОЗДАЁМ ПЛАВАЮЩИЕ НАДПИСИ ===
+        const container = document.getElementById('floatingContainer');
+        const phrases = ['Я тебя люблю ❤️', '❤️ I LOVE YOU ❤️', 'Ты моё солнышко ☀️', '❤️❤️❤️'];
+
+        // Создаём 20 плавающих надписей
+        for (let i = 0; i < 20; i++) {
+            const text = document.createElement('div');
+            text.className = 'floating-text';
+            text.textContent = phrases[i % phrases.length];
+
+            // Случайная позиция
+            text.style.left = Math.random() * 90 + '%';
+            text.style.top = Math.random() * 90 + '%';
+
+            // Случайный размер
+            const size = 20 + Math.random() * 30;
+            text.style.fontSize = size + 'px';
+
+            // Случайная задержка анимации
+            text.style.animationDelay = (Math.random() * 5) + 's';
+            text.style.animationDuration = (6 + Math.random() * 6) + 's';
+
+            // Случайный цвет (оттенки розового)
+            const hue = 340 + Math.random() * 20;
+            text.style.color = `hsl(${hue}, 80%, 70%)`;
+
+            container.appendChild(text);
+        }
+
+        // === 2. КОТИК ПОКАЗЫВАЕТ ЯЗЫК ===
+        const cat = document.getElementById('cat');
+        let isCatHappy = false;
+
+        // При наведении — котик показывает язык
+        cat.addEventListener('mouseenter', function() {
+            this.textContent = '😜'; // Котик с языком
+            isCatHappy = true;
+        });
+
+        // Когда убираем мышку — возвращаем котика
+        cat.addEventListener('mouseleave', function() {
+            if (!isCatHappy) {
+                this.textContent = '🐱';
+            }
+        });
+
+        // === 3. ПРИ НАЖАТИИ НА КОТИКА ===
+        const catContainer = document.getElementById('catContainer');
+        const notification = document.getElementById('notification');
+        const overlay = document.getElementById('overlay');
+        const closeBtn = document.getElementById('closeBtn');
+
+        catContainer.addEventListener('click', function(event) {
+            // Показываем уведомление
+            notification.classList.add('show');
+            overlay.classList.add('show');
+
+            // Взрыв сердечек
+            createSparkles(event.clientX, event.clientY);
+
+            // Котик улыбается
+            cat.textContent = '😺';
+            setTimeout(() => {
+                cat.textContent = '😜';
+            }, 300);
+        });
+
+        // Закрываем уведомление
+        closeBtn.addEventListener('click', function() {
+            notification.classList.remove('show');
+            overlay.classList.remove('show');
+            // Возвращаем котика
+            cat.textContent = '🐱';
+            isCatHappy = false;
+        });
+
+        // Закрываем по клику на затемнение
+        overlay.addEventListener('click', function() {
+            notification.classList.remove('show');
+            overlay.classList.remove('show');
+            cat.textContent = '🐱';
+            isCatHappy = false;
+        });
+
+        // === 4. ВЗРЫВ СЕРДЕЧЕК ===
+        function createSparkles(x, y) {
+            const emojis = ['❤️', '💖', '💕', '💗', '✨', '🌸', '💜', '💝'];
+
+            for (let i = 0; i < 30; i++) {
+                const spark = document.createElement('div');
+                spark.className = 'sparkle';
+                spark.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+
+                // Разброс вокруг точки клика
+                spark.style.left = (x + (Math.random() - 0.5) * 200) + 'px';
+                spark.style.top = (y + (Math.random() - 0.5) * 200) + 'px';
+                spark.style.fontSize = (20 + Math.random() * 40) + 'px';
+                spark.style.animationDuration = (1 + Math.random() * 1.5) + 's';
+
+                document.body.appendChild(spark);
+
+                // Удаляем после анимации
+                setTimeout(() => spark.remove(), 2500);
+            }
+        }
+
+        // === 5. ДОПОЛНИТЕЛЬНО: ЗВУКОВОЙ ЭФФЕКТ (опционально) ===
+        // Можно добавить звук при нажатии, но для простоты оставим без
+        console.log('❤️ Котик готов! Нажми на него! ❤️');
+    </script>
+
+</body>
+</html>
